@@ -39,7 +39,6 @@ goto :eof
 
 :5
 call"%dp0bat\remove.bat
-choice /C YN /M "Завершить работу с программой?"
 If errorlevel 2 goto :menu1
 If errorlevel 1 goto :end
 
