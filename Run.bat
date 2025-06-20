@@ -11,7 +11,7 @@ if "%1"=="admin" (
 cls
 color B0
 
-echo Секретная проженька 1.0.4
+echo Секретная проженька 1.0.6
 echo ЖЕНЁК-ФИНАНС ХЕВИ РАБОТАЙ ДИСКОРДЮТУБ ИНДАСТРИЗ ©
 Echo ____________________________________________________________________________________________________________  
 Echo             Внимание! Перед установкой новой стратегии или обновлении, не забудьте выполнить удаление!
@@ -71,9 +71,9 @@ set ARGS=--wf-tcp=80,443 --wf-udp=443,50000-50100 ^
 --filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
 --filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
 --filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
+--filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=split --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8
 
 set SRVCNAME=zapret
 
@@ -91,9 +91,9 @@ set ARGS=--wf-tcp=80,443 --wf-udp=443,50000-50100 ^
 --filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
 --filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
 --filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset-cloudflare.txt\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig,badseq
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,split2 --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
+--filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=6 --dpi-desync-fooling=md5sig,badseq
 
 set SRVCNAME=zapret
 
