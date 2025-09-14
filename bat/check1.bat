@@ -3,27 +3,27 @@ cls
 :: AdguardSvc.exe
 tasklist /FI "IMAGENAME eq AdguardSvc.exe" | find /I "AdguardSvc.exe" > nul
 if !errorlevel!==0 (
-    call :PrintRed "[X] Adguard process found. Adguard may cause problems with Discord"
+    call :PrintRed "[X] Найден процесс Adguard. Adguard может вызывать проблемы с Discord"
 ) else (
-    call :PrintGreen "Adguard check passed"
+    call :PrintGreen "Adguard проверка пройдена"
 )
 echo:
 
 :: Killer
 sc query | findstr /I "Killer" > nul
 if !errorlevel!==0 (
-    call :PrintRed "[X] Killer services found. Killer conflicts with zapret"
+    call :PrintRed "[X] Найдены службы Killer. Killer конфликтует с zapret"
 ) else (
-    call :PrintGreen "Killer check passed"
+    call :PrintGreen "Killer проверка пройдена"
 )
 echo:
 
 :: Intel Connectivity Network Service
 sc query | findstr /I "Intel" | findstr /I "Connectivity" | findstr /I "Network" > nul
 if !errorlevel!==0 (
-    call :PrintRed "[X] Intel Connectivity Network Service found. It conflicts with zapret"
+    call :PrintRed "[X] Найдены службы Intel Connectivity Network . Конфликтуют с zapret"
 ) else (
-    call :PrintGreen "Intel Connectivity check passed"
+    call :PrintGreen "Intel Connectivity проверка пройдена"
 )
 echo:
 
@@ -40,46 +40,45 @@ if !errorlevel!==0 (
 )
 
 if !checkpointFound!==1 (
-    call :PrintRed "[X] Check Point services found. Check Point conflicts with zapret"
+    call :PrintRed "[X] Найдены службы Check Point. Check Point конфликтует с zapret"
     call :PrintRed "Try to uninstall Check Point"
 ) else (
-    call :PrintGreen "Check Point check passed"
+    call :PrintGreen "Check Point проверка пройдена"
 )
 echo:
 
 :: SmartByte
 sc query | findstr /I "SmartByte" > nul
 if !errorlevel!==0 (
-    call :PrintRed "[X] SmartByte services found. SmartByte conflicts with zapret"
+    call :PrintRed "[X] Найдены службы SmartByte. SmartByte конфликтует с zapret"
     call :PrintRed "Try to uninstall or disable SmartByte through services.msc"
 ) else (
-    call :PrintGreen "SmartByte check passed"
+    call :PrintGreen "SmartByte проверка пройдена"
 )
 echo:
 
 :: VPN
 sc query | findstr /I "VPN" > nul
 if !errorlevel!==0 (
-    call :PrintYellow "[?] Some VPN services found. Some VPNs can conflict with zapret"
+    call :PrintYellow "[?] Обнаружены некоторые VPN-сервисы. Некоторые VPN-сервисы конфликтуют с zapret"
     call :PrintYellow "Make sure that all VPNs are disabled"
 ) else (
-    call :PrintGreen "VPN check passed"
+    call :PrintGreen "VPN проверка пройдена"
 )
 echo:
 
 :: DNS
-set "dnsfound=0"
-for /f "skip=1 tokens=*" %%a in ('wmic nicconfig where "IPEnabled=true" get DNSServerSearchOrder /format:table') do (
-    echo %%a | findstr /i "192.168." >nul
-    if !errorlevel!==0 (
-        set "dnsfound=1"
+set "dohfound=0"
+for /f "delims=" %%a in ('powershell -Command "Get-ChildItem -Recurse -Path 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' | Get-ItemProperty | Where-Object { $_.DohFlags -gt 0 } | Measure-Object | Select-Object -ExpandProperty Count"') do (
+    if %%a gtr 0 (
+        set "dohfound=1"
     )
 )
-if !dnsfound!==1 (
-    call :PrintYellow "[?] DNS servers are probably not specified."
-    call :PrintYellow "Provider's DNS servers are automatically used, which may affect zapret. It is recommended to install well-known DNS servers and setup DoH"
+if !dohfound!==0 (
+    call :PrintYellow "[?] DNS-серверы, вероятно, не указаны."
+    call :PrintYellow "DNS-сервера провайдера используются автоматически, что может повлиять на zapret. Рекомендуется установить известные DNS-серверы и настроить DoH"
 ) else (
-    call :PrintGreen "DNS check passed"
+    call :PrintGreen "DNS проверка пройдена"
 )
 echo:
 
