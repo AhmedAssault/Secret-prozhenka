@@ -1,5 +1,4 @@
 @echo off
-
 chcp 65001 > nul
 if "%1"=="admin" (
     echo Запущено с правами администратора
@@ -9,9 +8,13 @@ if "%1"=="admin" (
     exit /b
 )
 
+setlocal EnableDelayedExpansion
+
 :menu1
+chcp 65001 > nul
+set "menu_choice=null"
 cls
-echo Секретная проженька 1.2.2
+echo Секретная проженька 1.3.0
 echo ЖЕНЁК-ФИНАНС ХЕВИ РАБОТАЙ ДИСКОРДЮТУБ ИНДАСТРИЗ
 Echo _______________________________________________________________________________________________________________________
 Echo                                                        Внимание!
@@ -32,22 +35,55 @@ Echo             7. Остановить и удалить службы zapret �
 Echo             8. Выход
 Echo             ------------------------------------------------------------------------
 
-choice /C 12345678 /M "Введите цифру"
+set /p menu_choice=Введите нужную цифру и нажмите Enter (1-8):  
 
-If errorlevel 8 goto :end
-If errorlevel 7 goto :7
-If errorlevel 6 goto :6
-If errorlevel 5 goto :5
-If errorlevel 4 goto :4
-If errorlevel 3 goto :3 
-If errorlevel 2 goto :2
-If errorlevel 1 goto :1
+if "%menu_choice%"=="1" goto 2
+if "%menu_choice%"=="2" goto 2
+if "%menu_choice%"=="3" goto 3
+if "%menu_choice%"=="4" goto 4
+if "%menu_choice%"=="5" goto 5
+if "%menu_choice%"=="6" goto 6
+if "%menu_choice%"=="7" goto remove
+if "%menu_choice%"=="8" goto end
 
-goto :eof
+goto :menu1
 
-:7
+
+::Service
+:end
 cls
-call "%~dp0bat\remove.bat
+echo СПАСИБО ЗА ПОЛЬЗОВАНИЕ СЕРВИСАМИ ЖЕНЁК-ФИНАНС ХЕВИ МАЙНИНГ ИНДАСТРИЗ.
+TIMEOUT /T 3 /NOBREAK
+exit
+
+:remove
+cls
+set SRVCNAME=zapret
+sc query "!SRVCNAME!" >nul 2>&1
+if !errorlevel!==0 (
+    net stop %SRVCNAME%
+    sc delete %SRVCNAME%
+) else (
+    echo Service "%SRVCNAME%" не установлен.
+)
+
+tasklist /FI "IMAGENAME eq winws.exe" | find /I "winws.exe" > nul
+if !errorlevel!==0 (
+    taskkill /IM winws.exe /F > nul
+)
+
+sc query "WinDivert" >nul 2>&1
+if !errorlevel!==0 (
+    net stop "WinDivert"
+
+    sc query "WinDivert" >nul 2>&1
+    if !errorlevel!==0 (
+        sc delete "WinDivert"
+    )
+)
+net stop "WinDivert" >nul 2>&1
+sc delete "WinDivert" >nul 2>&1
+
 pause
 goto menu1
 
@@ -63,21 +99,22 @@ call "%~dp0bat\check0.bat
 pause
 goto menu1
 
+
+::Strategy
 :4
 cls
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
---filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
---filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
-
-call "%~dp0bat\remove.bat
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 
 
 set SRVCNAME=zapret
+net stop %SRVCNAME% >nul 2>&1
+sc delete %SRVCNAME% >nul 2>&1
 
 sc create "%SRVCNAME%" binPath= "%~dp0bin\winws.exe %ARGS%" DisplayName= "zapret DPI bypass : winws1" start= auto
 sc description "%SRVCNAME%" "zapret DPI bypass software"
@@ -89,18 +126,17 @@ goto menu1
 :3
 cls
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
---filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
---filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8 --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8
-
-call "%~dp0bat\remove.bat
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
 
 set SRVCNAME=zapret
+net stop %SRVCNAME% >nul 2>&1
+sc delete %SRVCNAME% >nul 2>&1
 
 sc create "%SRVCNAME%" binPath= "%~dp0bin\winws.exe %ARGS%" DisplayName= "zapret DPI bypass : winws1" start= auto
 sc description "%SRVCNAME%" "zapret DPI bypass software"
@@ -112,18 +148,17 @@ goto menu1
 :2
 cls
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
---filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
---filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
-
-call "%~dp0bat\remove.bat
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
 
 set SRVCNAME=zapret
+net stop %SRVCNAME% >nul 2>&1
+sc delete %SRVCNAME% >nul 2>&1
 
 sc create "%SRVCNAME%" binPath= "%~dp0bin\winws.exe %ARGS%" DisplayName= "zapret DPI bypass : winws1" start= auto
 sc description "%SRVCNAME%" "zapret DPI bypass software"
@@ -135,18 +170,17 @@ goto menu1
 :1
 cls
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
---filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
---filter-tcp=80 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multidisorder --dpi-desync-split-pos=midsld --dpi-desync-repeats=8 --dpi-desync-fooling=md5sig,badseq --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list.txt\" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,multisplit --dpi-desync-autottl=2 --dpi-desync-fooling=md5sig --new ^
---filter-tcp=443 --ipset=\"%~dp0list\ipset.txt\" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
-
-call "%~dp0bat\remove.bat
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" 
 
 set SRVCNAME=zapret
+net stop %SRVCNAME% >nul 2>&1
+sc delete %SRVCNAME% >nul 2>&1
 
 sc create "%SRVCNAME%" binPath= "%~dp0bin\winws.exe %ARGS%" DisplayName= "zapret DPI bypass : winws1" start= auto
 sc description "%SRVCNAME%" "zapret DPI bypass software"
@@ -154,8 +188,3 @@ sc start "%SRVCNAME%"
 
 pause
 goto menu1
-
-:end
-echo СПАСИБО ЗА ПОЛЬЗОВАНИЕ СЕРВИСАМИ ЖЕНЁК-ФИНАНС ХЕВИ МАЙНИНГ ИНДАСТРИЗ.
-TIMEOUT /T 3 /NOBREAK
-Exit
