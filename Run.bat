@@ -14,7 +14,7 @@ setlocal EnableDelayedExpansion
 chcp 65001 > nul
 set "menu_choice=null"
 cls
-echo Секретная проженька 1.3.1
+echo Секретная проженька 1.3.2
 echo ЖЕНЁК-ФИНАНС ХЕВИ РАБОТАЙ ДИСКОРДЮТУБ ИНДАСТРИЗ
 Echo _______________________________________________________________________________________________________________________
 Echo                                                        Внимание!
@@ -52,6 +52,11 @@ goto :menu1
 
 
 ::Service
+
+:tcp_enable
+netsh interface tcp show global | findstr /i "timestamps" | findstr /i "enabled" > nul || netsh interface tcp set global timestamps=enabled > nul 2>&1
+exit /b
+
 :end
 cls
 echo СПАСИБО ЗА ПОЛЬЗОВАНИЕ СЕРВИСАМИ ЖЕНЁК-ФИНАНС ХЕВИ МАЙНИНГ ИНДАСТРИЗ.
@@ -105,6 +110,7 @@ goto menu1
 ::Strategy
 :5
 cls
+call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
@@ -127,6 +133,7 @@ goto menu1
 
 :4
 cls
+call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
@@ -149,6 +156,7 @@ goto menu1
 
 :3
 cls
+call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
@@ -171,6 +179,7 @@ goto menu1
 
 :2
 cls
+call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
@@ -193,6 +202,7 @@ goto menu1
 
 :1
 cls
+call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
