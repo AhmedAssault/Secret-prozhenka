@@ -14,7 +14,7 @@ setlocal EnableDelayedExpansion
 chcp 65001 > nul
 set "menu_choice=null"
 cls
-echo Секретная проженька 1.3.2
+echo Секретная проженька 1.3.3
 echo ЖЕНЁК-ФИНАНС ХЕВИ РАБОТАЙ ДИСКОРДЮТУБ ИНДАСТРИЗ
 Echo _______________________________________________________________________________________________________________________
 Echo                                                        Внимание!
@@ -50,9 +50,7 @@ if "%menu_choice%"=="9" goto end
 
 goto :menu1
 
-
 ::Service
-
 :tcp_enable
 netsh interface tcp show global | findstr /i "timestamps" | findstr /i "enabled" > nul || netsh interface tcp set global timestamps=enabled > nul 2>&1
 exit /b
@@ -106,14 +104,13 @@ call "%~dp0bat\check0.bat
 pause
 goto menu1
 
-
 ::Strategy
 :5
 cls
 call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
+--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=654 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_max_ru.bin\" --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_max_ru.bin\" --new ^
 --filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-tls=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
 --filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=654 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_max_ru.bin\" --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_max_ru.bin\" --new ^
@@ -136,12 +133,12 @@ cls
 call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
---filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 --new ^
+--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --dpi-desync-fake-tls-mod=none --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_4pda_to.bin\" --dpi-desync-fake-tls-mod=none --new ^
 --filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-fake-tls-mod=none --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=2 
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls-mod=rnd,sni=www.google.com --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_4pda_to.bin\" --dpi-desync-fake-tls-mod=none
 
 set SRVCNAME=zapret
 net stop %SRVCNAME% >nul 2>&1
@@ -159,12 +156,12 @@ cls
 call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=hostfakesplit --dpi-desync-repeats=4 --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=www.google.com --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=hostfakesplit --dpi-desync-repeats=4 --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=www.google.com --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=hostfakesplit --dpi-desync-repeats=4 --dpi-desync-fooling=ts,md5sig --dpi-desync-hostfakesplit-mod=host=ozon.ru --new ^
 --filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=hostfakesplit --dpi-desync-repeats=4 --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=ozon.ru
 
 set SRVCNAME=zapret
 net stop %SRVCNAME% >nul 2>&1
@@ -182,12 +179,12 @@ cls
 call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,hostfakesplit --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-hostfakesplit-mod=host=www.google.com,altorder=1 --dpi-desync-fooling=ts --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake,hostfakesplit --dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com --dpi-desync-hostfakesplit-mod=host=www.google.com,altorder=1 --dpi-desync-fooling=ts --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake,hostfakesplit --dpi-desync-fake-tls-mod=rnd,dupsid,sni=ya.ru --dpi-desync-hostfakesplit-mod=host=ya.ru,altorder=1 --dpi-desync-fooling=ts --new ^
 --filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=652 --dpi-desync-split-pos=2 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake,hostfakesplit --dpi-desync-fake-tls-mod=rnd,dupsid,sni=ya.ru --dpi-desync-hostfakesplit-mod=host=ya.ru,altorder=1 --dpi-desync-fooling=ts
 
 set SRVCNAME=zapret
 net stop %SRVCNAME% >nul 2>&1
@@ -205,12 +202,12 @@ cls
 call :tcp_enable
 set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000-50100 ^
 --filter-udp=443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-fake-stun=\"%~dp0bin\quic_initial_www_google_com.bin\" --dpi-desync-repeats=6 --new ^
---filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
---filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new ^
+--filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=443 --hostlist=\"%~dp0list\list-google.txt\" --ip-id=zero --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
+--filter-tcp=80,443 --hostlist=\"%~dp0list\list.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\" --new ^
 --filter-udp=443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic=\"%~dp0bin\quic_initial_www_google_com.bin\" --new ^
---filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=multisplit --dpi-desync-split-seqovl=568 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern=\"%~dp0bin\tls_clienthello_www_google_com.bin\" 
+--filter-tcp=80,443 --ipset=\"%~dp0list\ipset.txt\" --hostlist-exclude=\"%~dp0list\list-exclude.txt\" --ipset-exclude=\"%~dp0list\ipset-exclude.txt\" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls=\"%~dp0bin\tls_clienthello_www_google_com.bin\"
 
 set SRVCNAME=zapret
 net stop %SRVCNAME% >nul 2>&1
