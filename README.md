@@ -1,4 +1,4 @@
-Установка сервиса для обхода блокировки Youtube и(или) Discord
+Установка сервиса для обхода блокировки Youtube и Discord
 
 Приложение winws взято из репозитория https://github.com/bol-van/zapret;
 
