@@ -2,8 +2,8 @@
 chcp 65001 > nul
 setlocal EnableDelayedExpansion
 
-set "APP_NAME=Secret prozhenka 1.5.1"
-title %APP_NAME%
+set "APP_NAME=Secret prozhenka 1.5.2"
+title "%APP_NAME%"
 
 :: Проверка прав администратора
 if "%1"=="admin" (
@@ -64,6 +64,7 @@ echo             ---------------------------------------------------------------
 echo             0. Выход
 echo.
 
+set "menu_choice="
 set /p "menu_choice=Введите нужную цифру и нажмите Enter (0-9): "
 
 if "!menu_choice!"=="1" goto 1
@@ -75,7 +76,7 @@ if "!menu_choice!"=="6" goto clear_discord
 if "!menu_choice!"=="7" goto check_services
 if "!menu_choice!"=="8" goto diagnostics
 if "!menu_choice!"=="9" goto remove
-if "!menu_choice!"=="0" exit /b
+if "!menu_choice!"=="0" exit
 
 goto :menu1
 
@@ -100,7 +101,7 @@ if !errorlevel!==0 set "has_anything=1"
 sc query "WinDivert" >nul 2>&1
 if !errorlevel!==0 set "has_anything=1"
 tasklist /FI "IMAGENAME eq winws.exe" 2>nul | find /I "winws.exe" > nul
-if !errorlevel!==0 set "has_anything=1"
+if not errorlevel 1 set "has_anything=1"
 
 if !has_anything!==0 (
     echo !C_GREEN!Компоненты обхода отсутствуют в системе, удаление не требуется.!C_RESET!
@@ -116,18 +117,18 @@ if !errorlevel!==0 (
     sc delete "!SRVCNAME!" >nul 2>&1
     echo !C_GREEN![УСПЕХ] Служба !SRVCNAME! успешно удалена.!C_RESET!
 ) else (
-    echo [ИНФО] Служба !SRVCNAME! не была установлена.
+    echo [1/3] [ИНФО] Служба !SRVCNAME! не была установлена.
 )
 echo.
 
 :: 2/3. Проверка и закрытие процессов winws.exe
+echo !C_YELLOW![2/3] Закрываем активные процессы winws.exe...!C_RESET!
 tasklist /FI "IMAGENAME eq winws.exe" 2>nul | find /I "winws.exe" > nul
-if !errorlevel!==0 (
-    echo !C_YELLOW![2/3] Закрываем активные процессы winws.exe...!C_RESET!
+if not errorlevel 1 (
     taskkill /IM winws.exe /F > nul 2>&1
     echo !C_GREEN![УСПЕХ] Все процессы winws.exe успешно закрыты.!C_RESET!
 ) else (
-    echo !C_GREEN![2/3] [ИНФО] Процессы winws.exe уже завершены службой.!C_RESET!
+    echo [ИНФО] Процессы winws.exe отсутствуют в системе.
 )
 echo.
 
@@ -140,7 +141,7 @@ if !errorlevel!==0 (
     sc delete "WinDivert" >nul 2>&1
     echo !C_GREEN![УСПЕХ] Драйвер WinDivert успешно удален.!C_RESET!
 ) else (
-    echo [ИНФО] Драйвер WinDivert не был запущен.
+    echo [3/3] [ИНФО] Драйвер WinDivert не был запущен.
 )
 
 echo.
@@ -178,35 +179,35 @@ set "RES_ADGUARD=!C_GREEN!Adguard проверка пройдена.!C_RESET!"
 tasklist /FI "IMAGENAME eq AdguardSvc.exe" 2>nul | find /I "AdguardSvc.exe" > nul
 if !errorlevel!==0 set "RES_ADGUARD=!C_RED![X] Найден процесс Adguard. Adguard может вызывать проблемы с Discord.!C_RESET!"
 echo !RES_ADGUARD!
-echo:
+echo.
 
 :: Проверка служб Killer
 set "RES_KILLER=!C_GREEN!Killer проверка пройдена.!C_RESET!"
 tasklist /FI "IMAGENAME eq KillerService.exe" 2>nul | find /I "KillerService.exe" > nul
 if !errorlevel!==0 set "RES_KILLER=!C_RED![X] Найден процесс Killer Network. Он жестко конфликтует с zapret.!C_RESET!"
 echo !RES_KILLER!
-echo:
+echo.
 
 :: Проверка Intel Connectivity Network Service
 set "RES_INTEL=!C_GREEN!Intel Connectivity проверка пройдена.!C_RESET!"
 tasklist /FI "IMAGENAME eq IntelConnectivityNetworkService.exe" 2>nul | find /I "IntelConnectivityNetworkService.exe" > nul
 if !errorlevel!==0 set "RES_INTEL=!C_RED![X] Найден процесс Intel Connectivity Network. Конфликтует с zapret.!C_RESET!"
 echo !RES_INTEL!
-echo:
+echo.
 
 :: Проверка Check Point
 set "RES_CHECKPOINT=!C_GREEN!Check Point проверка пройдена.!C_RESET!"
 tasklist /FI "IMAGENAME eq TracSrvWrapper.exe" 2>nul | find /I "TracSrvWrapper.exe" > nul
 if !errorlevel!==0 set "RES_CHECKPOINT=!C_RED![X] Найден Check Point VPN. Конфликт с zapret. Рекомендуется удалить.!C_RESET!"
 echo !RES_CHECKPOINT!
-echo:
+echo.
 
 :: Проверка SmartByte
 set "RES_SMARTBYTE=!C_GREEN!SmartByte проверка пройдена.!C_RESET!"
 tasklist /FI "IMAGENAME eq SmartByteNetworkService.exe" 2>nul | find /I "SmartByteNetworkService.exe" > nul
 if !errorlevel!==0 set "RES_SMARTBYTE=!C_RED![X] Найдена служба SmartByte. Она блокирует работу zapret. Удалите её.!C_RESET!"
 echo !RES_SMARTBYTE!
-echo:
+echo.
 
 :: Проверка VPN служб и программ обхода
 set "RES_VPN=!C_GREEN!VPN проверка пройдена.!C_RESET!"
@@ -215,23 +216,23 @@ tasklist /FI "IMAGENAME eq goodbye_dpi.exe" 2>nul | find /I "goodbye_dpi.exe" > 
 if !errorlevel!==0 set "RES_VPN=!C_RED![X] Запущен GoodbyeDPI. Он будет полностью блокировать работу zapret! Закройте его.!C_RESET!"
 
 tasklist /FI "IMAGENAME eq AmneziaVPN.exe" 2>nul | find /I "AmneziaVPN.exe" > nul
-if !errorlevel!==0 set "RES_VPN=!C_YELLOW![?] Запущена Amnezia VPN. Отключите её перед использованием zapret.!C_RESET!"
+if !errorlevel!==0 if not "!RES_VPN:~0,11!"=="!C_RED!" set "RES_VPN=!C_YELLOW![?] Запущена Amnezia VPN. Отключите её перед использованием zapret.!C_RESET!"
 
 tasklist /FI "IMAGENAME eq Outline.exe" 2>nul | find /I "Outline.exe" > nul
-if !errorlevel!==0 set "RES_VPN=!C_YELLOW![?] Запущен Outline VPN. Отключите его перед использованием zapret.!C_RESET!"
+if !errorlevel!==0 if not "!RES_VPN:~0,11!"=="!C_RED!" set "RES_VPN=!C_YELLOW![?] Запущен Outline VPN. Отключите его перед использованием zapret.!C_RESET!"
 
 tasklist /FI "IMAGENAME eq WireGuard.exe" 2>nul | find /I "WireGuard.exe" > nul
-if !errorlevel!==0 set "RES_VPN=!C_YELLOW![?] Запущен WireGuard. Он может перехватывать трафик у zapret.!C_RESET!"
+if !errorlevel!==0 if not "!RES_VPN:~0,11!"=="!C_RED!" set "RES_VPN=!C_YELLOW![?] Запущен WireGuard. Он может перехватывать трафик у zapret.!C_RESET!"
 
 tasklist /FI "IMAGENAME eq v2ray.exe" 2>nul | find /I "v2ray.exe" > nul
-if !errorlevel!==0 set "RES_VPN=!C_YELLOW![?] Запущен движок V2Ray/Xray (NekoBox/v2rayN). Возможен конфликт.!C_RESET!"
+if !errorlevel!==0 if not "!RES_VPN:~0,11!"=="!C_RED!" set "RES_VPN=!C_YELLOW![?] Запущен движок V2Ray/Xray (NekoBox/v2rayN). Возможен конфликт.!C_RESET!"
 
 if "!RES_VPN!"=="!C_GREEN!VPN проверка пройдена.!C_RESET!" (
     sc query type= service state= all 2>nul | findstr /I "VPN WireGuard Windscribe NordVPN Proton" > nul
-    if !errorlevel!==0 set "RES_VPN=!C_YELLOW![?] Найдены установленные службы VPN. Убедитесь, что ваш VPN полностью отключен.!C_RESET!"
+    if not errorlevel 1 set "RES_VPN=!C_YELLOW![?] Найдены установленные службы VPN. Убедитесь, что ваш VPN полностью отключен.!C_RESET!"
 )
 echo !RES_VPN!
-echo:
+echo.
 
 :: Проверка DNS / DoH
 set "RES_DNS=!C_GREEN!DNS проверка пройдена (Сторонний DNS или DoH active).!C_RESET!"
@@ -308,7 +309,7 @@ echo ===================================================
 echo [ПРОЦЕСС] Очистка кэша приложения Discord...
 echo ===================================================
 
-tasklist /FI "IMAGENAME eq Discord.exe" | findstr /I "Discord.exe" > nul
+tasklist /FI "IMAGENAME eq Discord.exe" 2>nul | findstr /I "Discord.exe" > nul
 if !errorlevel!==0 (
     echo !C_YELLOW!Discord запущен, закрываем процесс...!C_RESET!
     taskkill /IM Discord.exe /F > nul 2>&1
@@ -318,8 +319,9 @@ if !errorlevel!==0 (
 set "discordCacheDir=%appdata%\discord"
 set "deleted_count=0"
 
-for %%d in ("Cache" "Code Cache" "GPUCache") do (
-    set "dirPath=!discordCacheDir!\%%~d"
+for %%d in (Cache "Code Cache" GPUCache) do (
+    set "folder=%%~d"
+    set "dirPath=!discordCacheDir!\!folder!"
     if exist "!dirPath!" (
         rd /s /q "!dirPath!" 2>nul
         if not exist "!dirPath!" (
@@ -355,10 +357,10 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=hostfakesplit --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=www.google.com --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
 goto run_strategy
 
 :: Стратегия 4
@@ -371,9 +373,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
 goto run_strategy
 
 :: Стратегия 3
@@ -448,9 +450,11 @@ echo ===================================================
 echo [ПРОЦЕСС] Настройка автозапуска стратегии...
 echo ===================================================
 
+for %%I in ("%BIN%") do set "BIN_SHORT=%%~fsI"
+
 set "SC_ARGS=!ARGS:"=\"!"
 
-sc create "%SRVCNAME%" binPath= "\"%BIN%\winws.exe\" !SC_ARGS!" DisplayName= "zapret DPI bypass : winws1" start= auto >nul
+sc create "%SRVCNAME%" binPath= "%BIN_SHORT%\winws.exe !SC_ARGS!" DisplayName= "zapret DPI bypass : winws1" start= auto >nul
 sc description "%SRVCNAME%" "zapret DPI bypass software" >nul
 
 reg add "HKCU\Environment" /v ZAPRET_ACTIVE_VAR /t REG_SZ /d "%VAR_NUM%" /f >nul 2>&1
@@ -472,7 +476,7 @@ if !errorlevel!==0 (
 ) else (
     echo.
     echo !RED!===================================================!RESET!
-    echo !RED![ОШИБКА] Не удалось запустить службу автоматической стратегии.!RESET!
+    echo !RED![ОШИБКА] Не удалось запустить службу automatic стратегии.!RESET!
     echo !RED!===================================================!RESET!
 )
 
