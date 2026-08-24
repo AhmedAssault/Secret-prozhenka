@@ -2,7 +2,7 @@
 chcp 65001 > nul
 setlocal EnableDelayedExpansion
 
-set "APP_NAME=Secret prozhenka 1.5.2"
+set "APP_NAME=Secret prozhenka 1.5.3"
 title "%APP_NAME%"
 
 :: Проверка прав администратора
@@ -19,7 +19,20 @@ cd /d "%~dp0"
 for /F %%a in ('echo prompt $E ^| cmd') do set "ESC=%%a"
 set "M_GREEN=!ESC![32m"
 set "M_RED=!ESC![31m"
+set "M_YELLOW=!ESC![33m"
 set "M_RESET=!ESC![0m"
+
+:: Проверка новой версии
+echo [ИНФО] Проверка наличия обновлений программы...
+set "UPDATE_STATUS=!M_GREEN!Актуальная!M_RESET!"
+set "LATEST_VER="
+for /f "usebackq delims=" %%i in (`curl -s -L -f --max-time 3 "https://raw.githubusercontent.com/AhmedAssault/Secret-prozhenka/refs/heads/main/version.txt"`) do set "LATEST_VER=%%i"
+
+if "%LATEST_VER%"=="" (
+    set "UPDATE_STATUS=!M_YELLOW!Не удалось проверить!M_RESET!"
+) else if not "%LATEST_VER%"=="1.5.3" (
+    set "UPDATE_STATUS=!M_YELLOW!Доступна v!LATEST_VER! https://github.com/AhmedAssault/Secret-prozhenka/releases !M_RESET!"
+)
 
 :menu1
 cls
@@ -42,12 +55,14 @@ if !errorlevel!==0 (
 echo.
 echo   %APP_NAME%
 echo   Выбранная стратегия: !CURRENT_STRATEGY!
-echo ---------------------------------------------------------------------------------------------------------------
-echo           Помните, что ни один способ не вечен — провайдеры меняют настройки, и рабочая стратегия может сломаться.
-echo     Кроме того, та или иная стратегия может запускать Discord или Youtube, но блокировать другие сайты или приложения.
-echo                        Экспериментируйте с вариантами, пока не найдёте тот, который стабилен у вас.
-echo ---------------------------------------------------------------------------------------------------------------
-echo.
+echo   Версия программы:    !UPDATE_STATUS!
+echo ------------------------------------------------------------------------------------------------------------------
+echo      Помните, что ни один способ не вечен — провайдеры меняют настройки, и рабочая стратегия может сломаться.
+echo    Кроме того, та или иная стратегия может запускать Discord или Youtube, но ломать другие сайты или приложения.
+echo                        Discord: если завис или не грузит, попробуйте очистить кэш приложения.
+echo           Вносите Youtube в исключения блокировщиков рекламы. Настоятельно рекомендуется настройка DoH.
+echo                             Экспериментируйте с вариантами, пока не найдёте стабильный.
+echo ------------------------------------------------------------------------------------------------------------------
 echo             ::СТРАТЕГИИ
 echo             1. Установить обход блокировки YouTube+Discord на автозапуск (Вариант 1)
 echo             2. Установить обход блокировки YouTube+Discord на автозапуск (Вариант 2)
@@ -56,7 +71,7 @@ echo             4. Установить обход блокировки YouTube
 echo             5. Установить обход блокировки YouTube+Discord на автозапуск (Вариант 5)
 echo.
 echo             ::СЕРВИСНЫЕ КОМАНДЫ
-echo             6. Очистить кэш Discord (Может помочь при проблемах)
+echo             6. Очистить кэш Discord 
 echo             7. Проверить состояние служб zapret и WinDivert
 echo             8. Запустить диагностику
 echo             9. Остановить и удалить службы zapret и WinDivert
@@ -91,7 +106,7 @@ set "C_RESET=!ESC![0m"
 
 set "SRVCNAME=zapret"
 echo ===================================================
-echo [ПРОЦЕСС] Остановка и удаление компонентов обхода...
+echo Остановка и удаление компонентов обхода...
 echo ===================================================
 echo.
 
@@ -115,7 +130,7 @@ if !errorlevel!==0 (
     net stop "!SRVCNAME!" >nul 2>&1
     timeout /t 1 >nul 2>&1
     sc delete "!SRVCNAME!" >nul 2>&1
-    echo !C_GREEN![УСПЕХ] Служба !SRVCNAME! успешно удалена.!C_RESET!
+    echo !C_GREEN! Служба !SRVCNAME! успешно удалена.!C_RESET!
 ) else (
     echo [1/3] [ИНФО] Служба !SRVCNAME! не была установлена.
 )
@@ -126,7 +141,7 @@ echo !C_YELLOW![2/3] Закрываем активные процессы winws.
 tasklist /FI "IMAGENAME eq winws.exe" 2>nul | find /I "winws.exe" > nul
 if not errorlevel 1 (
     taskkill /IM winws.exe /F > nul 2>&1
-    echo !C_GREEN![УСПЕХ] Все процессы winws.exe успешно закрыты.!C_RESET!
+    echo !C_GREEN! Все процессы winws.exe успешно закрыты.!C_RESET!
 ) else (
     echo [ИНФО] Процессы winws.exe отсутствуют в системе.
 )
@@ -139,14 +154,14 @@ if !errorlevel!==0 (
     net stop "WinDivert" >nul 2>&1
     timeout /t 1 >nul 2>&1
     sc delete "WinDivert" >nul 2>&1
-    echo !C_GREEN![УСПЕХ] Драйвер WinDivert успешно удален.!C_RESET!
+    echo !C_GREEN! Драйвер WinDivert успешно удален.!C_RESET!
 ) else (
     echo [3/3] [ИНФО] Драйвер WinDivert не был запущен.
 )
 
 echo.
 echo !C_GREEN!===================================================!C_RESET!
-echo !C_GREEN![УСПЕХ] Все службы и процессы очищены!!C_RESET!
+echo !C_GREEN! Все службы и процессы очищены!!C_RESET!
 echo !C_GREEN!===================================================!C_RESET!
 
 REG DELETE "HKCU\Environment" /V ZAPRET_ACTIVE_VAR /F >nul 2>&1
@@ -170,7 +185,7 @@ set "C_YELLOW=!ESC![33m"
 set "C_RESET=!ESC![0m"
 
 echo ===================================================
-echo [ПРОЦЕСС] Запуск встроенной диагностики конфликтов...
+echo Запуск встроенной диагностики конфликтов...
 echo ===================================================
 echo.
 
@@ -235,10 +250,10 @@ echo !RES_VPN!
 echo.
 
 :: Проверка DNS / DoH
-set "RES_DNS=!C_GREEN!DNS проверка пройдена (Сторонний DNS или DoH active).!C_RESET!"
+set "RES_DNS=!C_GREEN!DNS проверка пройдена (Сторонний DNS или DoH включен).!C_RESET!"
 reg query "HKLM\System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters" /s 2>nul | findstr /i "DohFlags" >nul
 if !errorlevel! NEQ 0 (
-    set "RES_DNS=!C_YELLOW![?] DNS-серверы, вероятно, не указаны. Используются DNS провайдера, что может мешать zapret. Рекомендуется настроить сторонние DNS и DoH.!C_RESET!"
+    set "RES_DNS=!C_YELLOW![?] DNS-серверы, вероятно, не указаны и используются DNS провайдера, что может мешать zapret. Рекомендуется настроить сторонние DNS и DoH. Если DNS настроены на роутере, можно игнорировать данное сообщение.!C_RESET!"
 )
 echo !RES_DNS!
 
@@ -261,7 +276,7 @@ set "C_RED=!ESC![31m"
 set "C_RESET=!ESC![0m"
 
 echo ===================================================
-echo [ПРОЦЕСС] Проверка состояния служб и процессов...
+echo Проверка состояния служб и процессов...
 echo ===================================================
 echo.
 
@@ -306,7 +321,7 @@ set "C_YELLOW=!ESC![33m"
 set "C_RESET=!ESC![0m"
 
 echo ===================================================
-echo [ПРОЦЕСС] Очистка кэша приложения Discord...
+echo Очистка кэша приложения Discord...
 echo ===================================================
 
 tasklist /FI "IMAGENAME eq Discord.exe" 2>nul | findstr /I "Discord.exe" > nul
@@ -336,7 +351,7 @@ for %%d in (Cache "Code Cache" GPUCache) do (
 echo.
 if !deleted_count! gtr 0 (
     echo !C_GREEN!===================================================!C_RESET!
-    echo !C_GREEN![УСПЕХ] Кэш Discord успешно очищен!!C_RESET!
+    echo !C_GREEN! Кэш Discord успешно очищен!!C_RESET!
     echo !C_GREEN!===================================================!C_RESET!
 ) else (
     echo !C_GREEN!Кэш Discord уже пуст, удаление не требуется.!C_RESET!
@@ -423,7 +438,7 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
 goto run_strategy
 
-::Запуск службы
+:: Запуск службы
 :run_strategy
 cls
 call :tcp_enable
@@ -435,7 +450,7 @@ set "RED=!ESC![31m"
 set "RESET=!ESC![0m"
 
 echo ===================================================
-echo [ПРОЦЕСС] Удаление предыдущей стратегии...
+echo Удаление предыдущей стратегии...
 echo ===================================================
 net stop "%SRVCNAME%" >nul 2>&1
 timeout /t 1 >nul 2>&1
@@ -447,15 +462,17 @@ timeout /t 1 >nul
 
 cls
 echo ===================================================
-echo [ПРОЦЕСС] Настройка автозапуска стратегии...
+echo Настройка автозапуска стратегии...
 echo ===================================================
 
-for %%I in ("%BIN%") do set "BIN_SHORT=%%~fsI"
+chcp 1251 >nul
 
 set "SC_ARGS=!ARGS:"=\"!"
 
-sc create "%SRVCNAME%" binPath= "%BIN_SHORT%\winws.exe !SC_ARGS!" DisplayName= "zapret DPI bypass : winws1" start= auto >nul
+sc create "%SRVCNAME%" binPath= "\"%~dp0bin\winws.exe\" !SC_ARGS!" DisplayName= "zapret DPI bypass : winws1" start= auto >nul
 sc description "%SRVCNAME%" "zapret DPI bypass software" >nul
+
+chcp 65001 >nul
 
 reg add "HKCU\Environment" /v ZAPRET_ACTIVE_VAR /t REG_SZ /d "%VAR_NUM%" /f >nul 2>&1
 set "ZAPRET_ACTIVE_VAR=%VAR_NUM%"
@@ -471,7 +488,7 @@ sc query "%SRVCNAME%" | findstr /i "RUNNING" >nul
 if !errorlevel!==0 (
     echo.
     echo !GREEN!===================================================!RESET!
-    echo !GREEN![УСПЕХ] Вариант №%VAR_NUM% успешно добавлен в автозапуск!!RESET!
+    echo !GREEN! Вариант №%VAR_NUM% успешно добавлен в автозапуск!!RESET!
     echo !GREEN!===================================================!RESET!
 ) else (
     echo.
