@@ -2,7 +2,7 @@
 chcp 65001 > nul
 setlocal EnableDelayedExpansion
 
-set "APP_NAME=Secret prozhenka 1.5.3"
+set "APP_NAME=Secret prozhenka 1.5.4"
 title "%APP_NAME%"
 
 :: Проверка прав администратора
@@ -23,14 +23,14 @@ set "M_YELLOW=!ESC![33m"
 set "M_RESET=!ESC![0m"
 
 :: Проверка новой версии
-echo [ИНФО] Проверка наличия обновлений программы...
+echo Проверка наличия обновлений программы...
 set "UPDATE_STATUS=!M_GREEN!Актуальная!M_RESET!"
 set "LATEST_VER="
-for /f "usebackq delims=" %%i in (`curl -s -L -f --max-time 3 "https://raw.githubusercontent.com/AhmedAssault/Secret-prozhenka/refs/heads/main/version.txt"`) do set "LATEST_VER=%%i"
+for /f "usebackq delims=" %%i in (`curl -s -L -f --max-time 2 "https://raw.githubusercontent.com/AhmedAssault/Secret-prozhenka/refs/heads/main/version.txt"`) do set "LATEST_VER=%%i"
 
 if "%LATEST_VER%"=="" (
     set "UPDATE_STATUS=!M_YELLOW!Не удалось проверить!M_RESET!"
-) else if not "%LATEST_VER%"=="1.5.3" (
+) else if not "%LATEST_VER%"=="1.5.4" (
     set "UPDATE_STATUS=!M_YELLOW!Доступна v!LATEST_VER! https://github.com/AhmedAssault/Secret-prozhenka/releases !M_RESET!"
 )
 
@@ -132,7 +132,7 @@ if !errorlevel!==0 (
     sc delete "!SRVCNAME!" >nul 2>&1
     echo !C_GREEN! Служба !SRVCNAME! успешно удалена.!C_RESET!
 ) else (
-    echo [1/3] [ИНФО] Служба !SRVCNAME! не была установлена.
+    echo [1/3] Служба !SRVCNAME! не была установлена.
 )
 echo.
 
@@ -143,7 +143,7 @@ if not errorlevel 1 (
     taskkill /IM winws.exe /F > nul 2>&1
     echo !C_GREEN! Все процессы winws.exe успешно закрыты.!C_RESET!
 ) else (
-    echo [ИНФО] Процессы winws.exe отсутствуют в системе.
+    echo Процессы winws.exe отсутствуют в системе.
 )
 echo.
 
@@ -156,7 +156,7 @@ if !errorlevel!==0 (
     sc delete "WinDivert" >nul 2>&1
     echo !C_GREEN! Драйвер WinDivert успешно удален.!C_RESET!
 ) else (
-    echo [3/3] [ИНФО] Драйвер WinDivert не был запущен.
+    echo [3/3] Драйвер WinDivert не был запущен.
 )
 
 echo.
@@ -373,9 +373,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=hostfakesplit --dpi-desync-fooling=ts --dpi-desync-hostfakesplit-mod=host=www.google.com --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin"
 goto run_strategy
 
 :: Стратегия 4
@@ -388,9 +388,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_sferum_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_sferum_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=11 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_max_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-split-seqovl=664 --dpi-desync-split-pos=1 --dpi-desync-fooling=ts --dpi-desync-repeats=8 --dpi-desync-split-seqovl-pattern="%BIN%\tls_clienthello_www_sferum_ru.bin" --dpi-desync-fake-tls="%BIN%\stun2.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_sferum_ru.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin"
 goto run_strategy
 
 :: Стратегия 3
@@ -403,9 +403,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-tls-mod=none --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_4pda_to.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_4pda_to.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_4pda_to.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_4pda_to.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin"
 goto run_strategy
 
 :: Стратегия 2
@@ -418,9 +418,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,multisplit --dpi-desync-repeats=6 --dpi-desync-fooling=badseq --dpi-desync-badseq-increment=1000 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin"
 goto run_strategy
 
 :: Стратегия 1
@@ -433,9 +433,9 @@ set ARGS=--wf-tcp=80,443,2053,2083,2087,2096,8443 --wf-udp=443,19294-19344,50000
 --filter-udp=19294-19344,50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-fake-discord="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-fake-stun="%BIN%\quic_initial_dbankcloud_ru.bin" --dpi-desync-repeats=6 --new ^
 --filter-tcp=2053,2083,2087,2096,8443 --hostlist-domains=discord.media --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
 --filter-tcp=443 --hostlist="%LISTS%\list-google.txt" --ip-id=zero --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --new ^
---filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin" --new ^
+--filter-tcp=80,443 --hostlist="%LISTS%\list.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin" --new ^
 --filter-udp=443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic="%BIN%\quic_initial_www_google_com.bin" --new ^
---filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_max_ru.bin"
+--filter-tcp=80,443,8443 --ipset="%LISTS%\ipset.txt" --hostlist-exclude="%LISTS%\list-exclude.txt" --ipset-exclude="%LISTS%\ipset-exclude.txt" --dpi-desync=fake,fakedsplit --dpi-desync-repeats=6 --dpi-desync-fooling=ts --dpi-desync-fakedsplit-pattern=0x00 --dpi-desync-fake-tls="%BIN%\stun.bin" --dpi-desync-fake-tls="%BIN%\tls_clienthello_www_google_com.bin" --dpi-desync-fake-http="%BIN%\tls_clienthello_www_sferum_ru.bin"
 goto run_strategy
 
 :: Запуск службы
