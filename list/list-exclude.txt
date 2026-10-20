@@ -1,7 +1,8 @@
 pusher.com
 twitch.tv
-api.steampowered.com
+steampowered.com
 steamcommunity.com
+steamusercontent.com
 nvidia.com
 msi.com
 marketplace.visualstudio.com
@@ -11,6 +12,8 @@ libreoffice.org
 documentfoundation.org
 7-zip.org
 aida64.com
+battlepass.ru
+finargot.ru
 calibre-ebook.com
 ccleaner.com
 filezilla-project.org
@@ -62,6 +65,7 @@ akamaitechnologies.com
 boosty.to
 tanki.su
 lesta.ru
+lesta.pw
 korabli.su
 tanksblitz.ru
 reg.ru
@@ -123,3 +127,19 @@ t-bank-app.ru
 tochka-tech.com
 tochka.com
 vtb.ru
+ea.com
+gcs.ea.com
+proxy.novafusion.ea.com
+juno.ea.com
+autopatch.juno.ea.com
+cloudsync.juno.ea.com
+cloudsync-prod.s3.us-east-1.amazonaws.com
+desktop-config.juno.ea.com
+contentful-proxy.juno.ea.com
+api.k.social.ea.com
+groups.gameservices.ea.com
+friends.gs.ea.com
+pc.ea.com
+accounts.ea.com
+gateway.ea.com
+loginregistration.ea.com
